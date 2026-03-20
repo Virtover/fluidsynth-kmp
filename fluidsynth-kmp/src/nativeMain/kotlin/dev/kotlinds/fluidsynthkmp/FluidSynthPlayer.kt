@@ -26,6 +26,13 @@ import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 
+/**
+ * Native (cinterop) implementation of [FluidSynthPlayer].
+ *
+ * Delegates directly to the FluidSynth C API via Kotlin/Native cinterop.
+ *
+ * @see FluidSynthPlayer
+ */
 @OptIn(ExperimentalForeignApi::class)
 actual class FluidSynthPlayer actual constructor(sampleRate: Int) {
 

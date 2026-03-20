@@ -5,6 +5,14 @@ import com.sun.jna.Pointer
 /** FLUID_PLAYER_PLAYING status value from FluidSynth headers */
 private const val FLUID_PLAYER_PLAYING = 1
 
+/**
+ * JVM implementation of [MidiFilePlayer].
+ *
+ * Delegates to [FluidSynthLib] (JNA binding) to call the system FluidSynth shared library.
+ * The completion callback is dispatched on a daemon thread via [Thread].
+ *
+ * @see MidiFilePlayer
+ */
 actual class MidiFilePlayer actual constructor(
     soundFontPath: String,
     midiPath: String,

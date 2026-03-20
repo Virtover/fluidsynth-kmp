@@ -3,6 +3,14 @@ package dev.kotlinds.fluidsynthkmp
 /** FLUID_PLAYER_PLAYING status value from FluidSynth headers */
 private const val FLUID_PLAYER_PLAYING = 1
 
+/**
+ * Android implementation of [MidiFilePlayer].
+ *
+ * Delegates to [FluidSynthJni], which loads the bundled `fluidsynth_jni` native library via JNI.
+ * The completion callback is dispatched on a daemon thread via [Thread].
+ *
+ * @see MidiFilePlayer
+ */
 actual class MidiFilePlayer actual constructor(
     soundFontPath: String,
     midiPath: String,

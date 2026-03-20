@@ -1,5 +1,13 @@
 package dev.kotlinds.fluidsynthkmp
 
+/**
+ * Android implementation of [FluidSynthPlayer].
+ *
+ * Delegates to [FluidSynthJni], which loads the bundled `fluidsynth_jni` native library via JNI.
+ * No additional system installation is required on Android.
+ *
+ * @see FluidSynthPlayer
+ */
 actual class FluidSynthPlayer actual constructor(sampleRate: Int) {
 
     private val settingsPtr: Long

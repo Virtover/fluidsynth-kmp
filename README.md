@@ -93,6 +93,15 @@ player.noteOff(channel = 0, key = 60)
 // Adjust master volume (0.0 to 10.0, default 0.2)
 player.setGain(0.5f)
 
+// Configure reverb (roomSize, damping, width, level)
+player.setReverb(roomSize = 0.6, damping = 0.5, width = 0.5, level = 0.3)
+
+// Configure chorus (voiceCount, level, speed, depth)
+player.setChorus(voiceCount = 3, level = 2.0, speed = 0.3, depth = 8.0)
+
+// Render audio offline (interleaved stereo, frames * 2 floats)
+val buffer = player.renderFloat(frames = 1024)
+
 // Always close when done to free native resources
 player.close()
 ```
@@ -104,20 +113,24 @@ Use `MidiFilePlayer` to play a complete `.mid` file through a SoundFont.
 ```kotlin
 val player = MidiFilePlayer(
     soundFontPath = "/path/to/soundfont.sf2",
-    midiPath = "/path/to/song.mid",
-    sampleRate = 44100
+    midiPath = "/path/to/song.mid"
 )
 
-player.play()
+// Play with a completion handler
+player.play {
+    println("Playback finished")
+    player.close()
+}
 
-// Check playback state
-println(player.isPlaying) // true
+// Pause and resume
+player.pause()
+player.play()  // resumes from where it was paused
 
-// Stop playback
-player.stop()
+// Seek to a position
+player.seekTo(1000L)
 
-// Always close when done
-player.close()
+println("Duration: ${player.durationTicks} ticks")
+println("Playing: ${player.isPlaying}")
 ```
 
 ### Android — loading files from assets
@@ -148,42 +161,29 @@ player.play()
 
 ### `FluidSynthPlayer`
 
-```kotlin
-class FluidSynthPlayer(sampleRate: Int = 44100) {
-    // Load a SoundFont file. Returns the SoundFont ID (≥ 0) or -1 on error.
-    fun loadSoundFont(path: String): Int
-
-    // Send a MIDI note-on event. velocity 0–127.
-    fun noteOn(channel: Int, key: Int, velocity: Int)
-
-    // Send a MIDI note-off event.
-    fun noteOff(channel: Int, key: Int)
-
-    // Change the active program (instrument) on a channel. program 0–127.
-    fun programChange(channel: Int, program: Int)
-
-    // Set the master gain. Typical range: 0.0–1.0, max ~10.0.
-    fun setGain(gain: Float)
-
-    // Release all native resources. Must be called when done.
-    fun close()
-}
-```
+| Method | Description |
+|--------|-------------|
+| `loadSoundFont(path: String): Int` | Loads a SoundFont (.sf2) file. Returns sfont ID ≥ 0, or -1 on error. |
+| `noteOn(channel, key, velocity)` | Sends a MIDI note-on event. |
+| `noteOff(channel, key)` | Sends a MIDI note-off event. |
+| `programChange(channel, program)` | Selects a General MIDI instrument (0–127) on a channel. |
+| `setGain(gain: Float)` | Sets master output gain. Typical range: 0.0–1.0. |
+| `setReverb(roomSize, damping, width, level)` | Configures the reverb effect (all Double). |
+| `setChorus(voiceCount, level, speed, depth)` | Configures the chorus effect. |
+| `renderFloat(frames: Int): FloatArray` | Renders `frames` audio frames to an interleaved stereo float buffer. |
+| `close()` | Releases all native resources. Must be called when done. |
 
 ### `MidiFilePlayer`
 
-```kotlin
-class MidiFilePlayer(
-    soundFontPath: String,
-    midiPath: String,
-    sampleRate: Int = 44100
-) {
-    fun play()
-    fun stop()
-    val isPlaying: Boolean
-    fun close()
-}
-```
+| Method / Property | Description |
+|-------------------|-------------|
+| `play(onComplete: (() -> Unit)? = null)` | Starts or resumes playback. Optional callback fires on a background thread when the song finishes. |
+| `stop()` | Stops playback and resets position to start. |
+| `pause()` | Pauses playback, saving the current position. |
+| `seekTo(tick: Long)` | Seeks to a tick position in the MIDI file. |
+| `isPlaying: Boolean` | `true` while actively playing (false when paused, stopped, or done). |
+| `durationTicks: Long` | Total duration of the MIDI file in ticks. |
+| `close()` | Releases all native resources. Must be called when done. |
 
 ## License
 

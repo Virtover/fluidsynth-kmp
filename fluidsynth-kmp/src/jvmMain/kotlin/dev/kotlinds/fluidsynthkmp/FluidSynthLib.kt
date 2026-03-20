@@ -6,7 +6,12 @@ import com.sun.jna.Pointer
 
 /**
  * JNA binding for the FluidSynth native library.
- * Loads the system-installed `fluidsynth` shared library at runtime.
+ *
+ * Maps the public C API of FluidSynth to Kotlin function declarations. The library is loaded
+ * lazily from the system-installed `fluidsynth` shared library (e.g. `libfluidsynth.so` on Linux,
+ * `libfluidsynth.dylib` on macOS, `fluidsynth.dll` on Windows).
+ *
+ * This interface is internal — use [FluidSynthPlayer] and [MidiFilePlayer] instead.
  */
 internal interface FluidSynthLib : Library {
 

@@ -23,6 +23,13 @@ import kotlinx.cinterop.ExperimentalForeignApi
 /** fluid_player_status_t::FLUID_PLAYER_PLAYING == 1 */
 private const val FLUID_PLAYER_PLAYING_VALUE = 1
 
+/**
+ * Native (cinterop) implementation of [MidiFilePlayer].
+ *
+ * Delegates directly to the FluidSynth C API via Kotlin/Native cinterop.
+ *
+ * @see MidiFilePlayer
+ */
 @OptIn(ExperimentalForeignApi::class)
 actual class MidiFilePlayer actual constructor(
     soundFontPath: String,

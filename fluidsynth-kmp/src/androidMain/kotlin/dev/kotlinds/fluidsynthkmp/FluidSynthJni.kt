@@ -1,8 +1,10 @@
 package dev.kotlinds.fluidsynthkmp
 
 /**
- * JNI bridge to the native fluidsynth_jni shared library.
- * All pointer values are represented as Long (native pointer size).
+ * JNI bridge to the native `fluidsynth_jni` shared library bundled with this module.
+ *
+ * All FluidSynth object pointers are passed as [Long] values (native pointer width).
+ * This object is internal — use [FluidSynthPlayer] and [MidiFilePlayer] instead.
  */
 internal object FluidSynthJni {
     init {

@@ -2,6 +2,13 @@ package dev.kotlinds.fluidsynthkmp
 
 import com.sun.jna.Pointer
 
+/**
+ * JVM implementation of [FluidSynthPlayer].
+ *
+ * Delegates to [FluidSynthLib] (JNA binding) to call the system FluidSynth shared library.
+ *
+ * @see FluidSynthPlayer
+ */
 actual class FluidSynthPlayer actual constructor(sampleRate: Int) {
 
     private val lib = FluidSynthLib.INSTANCE
