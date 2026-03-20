@@ -39,12 +39,17 @@ mavenPublishing {
 val libsDir = File(rootDir, "libs")
 val includeDir = File(libsDir, "include")
 
-// XCFramework from official FluidSynth releases (v2.5.1+)
+// Static libraries built by scripts/build-ios-static.sh
+val iosStaticDir = File(libsDir, "ios-static")
+val iosArm64StaticDir = File(iosStaticDir, "arm64")
+val iosSimulatorStaticDir = File(iosStaticDir, "arm64_x86_64-simulator")
+val hasIosArm64Lib = File(iosArm64StaticDir, "libfluidsynth.a").exists()
+val hasIosSimulatorLib = File(iosSimulatorStaticDir, "libfluidsynth.a").exists()
+
+// XCFramework headers are still used for cinterop (same version as static build)
 val xcframeworkBase = libsDir.walk().maxDepth(3).find { it.name == "FluidSynth.xcframework" }
-val iosArm64FrameworkDir = xcframeworkBase?.resolve("ios-arm64")
-val iosSimulatorFrameworkDir = xcframeworkBase?.resolve("ios-arm64_x86_64-simulator")
-val hasIosArm64Lib = iosArm64FrameworkDir?.resolve("FluidSynth.framework/FluidSynth")?.exists() == true
-val hasIosSimulatorLib = iosSimulatorFrameworkDir?.resolve("FluidSynth.framework/FluidSynth")?.exists() == true
+val iosArm64HeadersDir = xcframeworkBase?.resolve("ios-arm64/FluidSynth.framework/Headers")
+val iosSimulatorHeadersDir = xcframeworkBase?.resolve("ios-arm64_x86_64-simulator/FluidSynth.framework/Headers")
 
 android {
     namespace = "dev.kotlinds.fluidsynthkmp"
@@ -90,16 +95,15 @@ kotlin {
         }
     }
 
-    // iOS targets: use XCFramework if available (FluidSynth v2.5.1+)
-    // XCFramework is auto-detected from libs/ios-xcframework/
+    // iOS targets: statically linked — libfluidsynth.a is embedded in the klib.
+    // Run scripts/build-ios-static.sh once to populate libs/ios-static/ before publishing.
     iosSimulatorArm64 {
         if (hasIosSimulatorLib) {
             val main by compilations.getting
             main.cinterops.create("fluidsynth") {
-                definitionFile = file("src/nativeInterop/cinterop/fluidsynth.def")
-                includeDirs.headerFilterOnly(iosSimulatorFrameworkDir!!.resolve("FluidSynth.framework/Headers"))
-                extraOpts("-compiler-option", "-F${iosSimulatorFrameworkDir.absolutePath}")
-                extraOpts("-linker-option", "-F${iosSimulatorFrameworkDir.absolutePath}")
+                definitionFile = file("src/nativeInterop/cinterop/fluidsynth-ios-simulator.def")
+                includeDirs.headerFilterOnly(iosSimulatorHeadersDir!!)
+                extraOpts("-libraryPath", iosSimulatorStaticDir.absolutePath)
             }
         }
     }
@@ -107,10 +111,9 @@ kotlin {
         if (hasIosSimulatorLib) {
             val main by compilations.getting
             main.cinterops.create("fluidsynth") {
-                definitionFile = file("src/nativeInterop/cinterop/fluidsynth.def")
-                includeDirs.headerFilterOnly(iosSimulatorFrameworkDir!!.resolve("FluidSynth.framework/Headers"))
-                extraOpts("-compiler-option", "-F${iosSimulatorFrameworkDir.absolutePath}")
-                extraOpts("-linker-option", "-F${iosSimulatorFrameworkDir.absolutePath}")
+                definitionFile = file("src/nativeInterop/cinterop/fluidsynth-ios-simulator.def")
+                includeDirs.headerFilterOnly(iosSimulatorHeadersDir!!)
+                extraOpts("-libraryPath", iosSimulatorStaticDir.absolutePath)
             }
         }
     }
@@ -135,10 +138,9 @@ kotlin {
         if (hasIosArm64Lib) {
             val main by compilations.getting
             main.cinterops.create("fluidsynth") {
-                definitionFile = file("src/nativeInterop/cinterop/fluidsynth.def")
-                includeDirs.headerFilterOnly(iosArm64FrameworkDir!!.resolve("FluidSynth.framework/Headers"))
-                extraOpts("-compiler-option", "-F${iosArm64FrameworkDir.absolutePath}")
-                extraOpts("-linker-option", "-F${iosArm64FrameworkDir.absolutePath}")
+                definitionFile = file("src/nativeInterop/cinterop/fluidsynth-ios-arm64.def")
+                includeDirs.headerFilterOnly(iosArm64HeadersDir!!)
+                extraOpts("-libraryPath", iosArm64StaticDir.absolutePath)
             }
         }
     }
