@@ -41,6 +41,7 @@ internal interface FluidSynthLib : Library {
     fun fluid_player_get_current_tick(player: Pointer): Int
     fun fluid_player_get_total_ticks(player: Pointer): Int
     fun fluid_player_seek(player: Pointer, ticks: Int): Int
+    fun fluid_player_join(player: Pointer): Int
 
     // Reverb
     fun fluid_synth_set_reverb_group_roomsize(synth: Pointer, fx_group: Int, roomsize: Double): Int

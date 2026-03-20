@@ -161,6 +161,12 @@ Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_playerGetStatus(JNIEnv *env, jobje
     return fluid_player_get_status((fluid_player_t *)(intptr_t)player_ptr);
 }
 
+JNIEXPORT jint JNICALL
+Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_playerJoin(JNIEnv *env, jobject thiz, jlong player_ptr) {
+    if (!player_ptr) return -1;
+    return fluid_player_join((fluid_player_t *)(intptr_t)player_ptr);
+}
+
 /* ---- Reverb ---- */
 
 JNIEXPORT jint JNICALL

@@ -8,6 +8,7 @@ import fluidsynth.native.fluid_player_add
 import fluidsynth.native.fluid_player_get_current_tick
 import fluidsynth.native.fluid_player_get_status
 import fluidsynth.native.fluid_player_get_total_ticks
+import fluidsynth.native.fluid_player_join
 import fluidsynth.native.fluid_player_play
 import fluidsynth.native.fluid_player_seek
 import fluidsynth.native.fluid_player_stop
@@ -16,6 +17,7 @@ import fluidsynth.native.new_fluid_audio_driver
 import fluidsynth.native.new_fluid_player
 import fluidsynth.native.new_fluid_settings
 import fluidsynth.native.new_fluid_synth
+import kotlin.native.concurrent.Worker
 import kotlinx.cinterop.ExperimentalForeignApi
 
 /** fluid_player_status_t::FLUID_PLAYER_PLAYING == 1 */
@@ -40,12 +42,19 @@ actual class MidiFilePlayer actual constructor(
         fluid_player_add(player, midiPath)
     }
 
-    actual fun play() {
+    actual fun play(onComplete: (() -> Unit)?) {
         if (pausedAtTick >= 0) {
             fluid_player_seek(player, pausedAtTick)
             pausedAtTick = -1
         }
         fluid_player_play(player)
+        if (onComplete != null) {
+            val worker = Worker.start()
+            worker.executeAfter(0L) {
+                fluid_player_join(player)
+                onComplete()
+            }
+        }
     }
 
     actual fun stop() {

@@ -23,12 +23,18 @@ actual class MidiFilePlayer actual constructor(
         FluidSynthJni.playerAdd(playerPtr, midiPath)
     }
 
-    actual fun play() {
+    actual fun play(onComplete: (() -> Unit)?) {
         if (pausedAtTick >= 0) {
             FluidSynthJni.playerSeek(playerPtr, pausedAtTick)
             pausedAtTick = -1
         }
         FluidSynthJni.playerPlay(playerPtr)
+        if (onComplete != null) {
+            Thread {
+                FluidSynthJni.playerJoin(playerPtr)
+                onComplete()
+            }.also { it.isDaemon = true }.start()
+        }
     }
 
     actual fun stop() {

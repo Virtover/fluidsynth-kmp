@@ -26,12 +26,18 @@ actual class MidiFilePlayer actual constructor(
         lib.fluid_player_add(player, midiPath)
     }
 
-    actual fun play() {
+    actual fun play(onComplete: (() -> Unit)?) {
         if (pausedAtTick >= 0) {
             lib.fluid_player_seek(player, pausedAtTick)
             pausedAtTick = -1
         }
         lib.fluid_player_play(player)
+        if (onComplete != null) {
+            Thread {
+                lib.fluid_player_join(player)
+                onComplete()
+            }.also { it.isDaemon = true }.start()
+        }
     }
 
     actual fun stop() {

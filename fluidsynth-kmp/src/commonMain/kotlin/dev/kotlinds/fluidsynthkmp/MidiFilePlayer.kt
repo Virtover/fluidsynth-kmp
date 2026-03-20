@@ -5,7 +5,7 @@ package dev.kotlinds.fluidsynthkmp
  * Loads a SoundFont and MIDI file, plays back through the audio driver.
  */
 expect class MidiFilePlayer(soundFontPath: String, midiPath: String, sampleRate: Int = 44100) {
-    fun play()
+    fun play(onComplete: (() -> Unit)? = null)
     fun stop()
     fun pause()
     fun seekTo(tick: Long)

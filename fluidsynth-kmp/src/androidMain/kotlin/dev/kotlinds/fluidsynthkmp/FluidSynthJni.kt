@@ -31,6 +31,7 @@ internal object FluidSynthJni {
     external fun playerStop(playerPtr: Long): Int
     external fun playerDelete(playerPtr: Long)
     external fun playerGetStatus(playerPtr: Long): Int
+    external fun playerJoin(playerPtr: Long): Int
 
     external fun setReverbRoomSize(synthPtr: Long, roomSize: Double): Int
     external fun setReverbDamp(synthPtr: Long, damping: Double): Int
