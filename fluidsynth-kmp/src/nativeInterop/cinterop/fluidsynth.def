@@ -1,0 +1,4 @@
+package = fluidsynth.native
+headers = fluidsynth.h
+headerFilter = fluidsynth/** fluidsynth.h
+linkerOpts = -framework FluidSynth -framework CoreAudio -framework AudioToolbox -framework CoreMIDI -framework CoreFoundation -framework AVFoundation

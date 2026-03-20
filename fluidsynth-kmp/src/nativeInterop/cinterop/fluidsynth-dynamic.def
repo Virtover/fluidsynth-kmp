@@ -1,0 +1,4 @@
+package = fluidsynth.native
+headers = fluidsynth.h
+headerFilter = fluidsynth/** fluidsynth.h
+linkerOpts = -lfluidsynth
