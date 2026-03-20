@@ -1,7 +1,12 @@
 # fluidsynth-kmp
 
-Kotlin Multiplatform wrapper for [FluidSynth](https://www.fluidsynth.org/) — a real-time SF2/MIDI software synthesizer.
+Kotlin Multiplatform wrapper for [FluidSynth](https://www.fluidsynth.org/), a real-time SF2/MIDI software synthesizer.
 Supports Android, iOS, macOS, Linux, Windows, and JVM/Desktop from a single Kotlin API.
+
+[![License](https://img.shields.io/github/license/kotlinds/fluidsynth-kmp)](LICENSE)
+[![Maven Central Version](https://img.shields.io/maven-central/v/dev.kotlinds/fluidsynth-kmp)](https://klibs.io/project/kotlinds/fluidsynth-kmp)
+[![Issues](https://img.shields.io/github/issues/kotlinds/fluidsynth-kmp)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/kotlinds/fluidsynth-kmp)]()
 
 ## What's included
 
@@ -161,29 +166,29 @@ player.play()
 
 ### `FluidSynthPlayer`
 
-| Method | Description |
-|--------|-------------|
-| `loadSoundFont(path: String): Int` | Loads a SoundFont (.sf2) file. Returns sfont ID ≥ 0, or -1 on error. |
-| `noteOn(channel, key, velocity)` | Sends a MIDI note-on event. |
-| `noteOff(channel, key)` | Sends a MIDI note-off event. |
-| `programChange(channel, program)` | Selects a General MIDI instrument (0–127) on a channel. |
-| `setGain(gain: Float)` | Sets master output gain. Typical range: 0.0–1.0. |
-| `setReverb(roomSize, damping, width, level)` | Configures the reverb effect (all Double). |
-| `setChorus(voiceCount, level, speed, depth)` | Configures the chorus effect. |
-| `renderFloat(frames: Int): FloatArray` | Renders `frames` audio frames to an interleaved stereo float buffer. |
-| `close()` | Releases all native resources. Must be called when done. |
+| Method                                       | Description                                                          |
+|----------------------------------------------|----------------------------------------------------------------------|
+| `loadSoundFont(path: String): Int`           | Loads a SoundFont (.sf2) file. Returns sfont ID ≥ 0, or -1 on error. |
+| `noteOn(channel, key, velocity)`             | Sends a MIDI note-on event.                                          |
+| `noteOff(channel, key)`                      | Sends a MIDI note-off event.                                         |
+| `programChange(channel, program)`            | Selects a General MIDI instrument (0–127) on a channel.              |
+| `setGain(gain: Float)`                       | Sets master output gain. Typical range: 0.0–1.0.                     |
+| `setReverb(roomSize, damping, width, level)` | Configures the reverb effect (all Double).                           |
+| `setChorus(voiceCount, level, speed, depth)` | Configures the chorus effect.                                        |
+| `renderFloat(frames: Int): FloatArray`       | Renders `frames` audio frames to an interleaved stereo float buffer. |
+| `close()`                                    | Releases all native resources. Must be called when done.             |
 
 ### `MidiFilePlayer`
 
-| Method / Property | Description |
-|-------------------|-------------|
+| Method / Property                        | Description                                                                                        |
+|------------------------------------------|----------------------------------------------------------------------------------------------------|
 | `play(onComplete: (() -> Unit)? = null)` | Starts or resumes playback. Optional callback fires on a background thread when the song finishes. |
-| `stop()` | Stops playback and resets position to start. |
-| `pause()` | Pauses playback, saving the current position. |
-| `seekTo(tick: Long)` | Seeks to a tick position in the MIDI file. |
-| `isPlaying: Boolean` | `true` while actively playing (false when paused, stopped, or done). |
-| `durationTicks: Long` | Total duration of the MIDI file in ticks. |
-| `close()` | Releases all native resources. Must be called when done. |
+| `stop()`                                 | Stops playback and resets position to start.                                                       |
+| `pause()`                                | Pauses playback, saving the current position.                                                      |
+| `seekTo(tick: Long)`                     | Seeks to a tick position in the MIDI file.                                                         |
+| `isPlaying: Boolean`                     | `true` while actively playing (false when paused, stopped, or done).                               |
+| `durationTicks: Long`                    | Total duration of the MIDI file in ticks.                                                          |
+| `close()`                                | Releases all native resources. Must be called when done.                                           |
 
 ## License
 
