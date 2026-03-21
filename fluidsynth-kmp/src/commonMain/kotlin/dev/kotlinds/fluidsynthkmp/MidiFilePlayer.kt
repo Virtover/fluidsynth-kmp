@@ -58,6 +58,13 @@ expect class MidiFilePlayer(
     val isPlaying: Boolean
 
     /**
+     * The current playback position in MIDI ticks.
+     *
+     * Returns 0 when stopped or before playback starts.
+     */
+    val currentTick: Long
+
+    /**
      * The total duration of the loaded MIDI file in ticks.
      *
      * Returns 0 if the duration cannot be determined.

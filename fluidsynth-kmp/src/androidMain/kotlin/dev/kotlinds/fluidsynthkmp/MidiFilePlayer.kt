@@ -57,6 +57,9 @@ actual class MidiFilePlayer actual constructor(
     actual val isPlaying: Boolean
         get() = pausedAtTick < 0 && FluidSynthJni.playerGetStatus(playerPtr) == FLUID_PLAYER_PLAYING
 
+    actual val currentTick: Long
+        get() = if (pausedAtTick >= 0) pausedAtTick.toLong() else FluidSynthJni.playerGetCurrentTick(playerPtr).toLong()
+
     actual val durationTicks: Long
         get() = FluidSynthJni.playerGetTotalTicks(playerPtr).toLong()
 

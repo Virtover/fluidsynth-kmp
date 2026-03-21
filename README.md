@@ -229,6 +229,7 @@ player.play()
 | `pause()`                                | Pauses playback, saving the current position.                                                      |
 | `seekTo(tick: Long)`                     | Seeks to a tick position in the MIDI file.                                                         |
 | `isPlaying: Boolean`                     | `true` while actively playing (false when paused, stopped, or done).                               |
+| `currentTick: Long`                      | Current playback position in ticks. Returns the paused position when paused.                       |
 | `durationTicks: Long`                    | Total duration of the MIDI file in ticks.                                                          |
 | `close()`                                | Releases all native resources. Must be called when done.                                           |
 

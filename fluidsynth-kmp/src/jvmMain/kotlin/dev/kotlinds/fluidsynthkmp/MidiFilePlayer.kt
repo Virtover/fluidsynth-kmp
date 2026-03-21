@@ -60,6 +60,9 @@ actual class MidiFilePlayer actual constructor(
     actual val isPlaying: Boolean
         get() = pausedAtTick < 0 && lib.fluid_player_get_status(player) == FLUID_PLAYER_PLAYING
 
+    actual val currentTick: Long
+        get() = if (pausedAtTick >= 0) pausedAtTick.toLong() else lib.fluid_player_get_current_tick(player).toLong()
+
     actual val durationTicks: Long
         get() = lib.fluid_player_get_total_ticks(player).toLong()
 

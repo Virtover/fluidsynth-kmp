@@ -1,18 +1,8 @@
 package dev.kotlinds.fluidsynthkmp
 
-import fluidsynth.native.delete_fluid_player
-import fluidsynth.native.fluid_player_add
-import fluidsynth.native.fluid_player_get_current_tick
-import fluidsynth.native.fluid_player_get_status
-import fluidsynth.native.fluid_player_get_total_ticks
-import fluidsynth.native.fluid_player_join
-import fluidsynth.native.fluid_player_play
-import fluidsynth.native.fluid_player_seek
-import fluidsynth.native.fluid_player_stop
-import fluidsynth.native.fluid_synth_sfload
-import fluidsynth.native.new_fluid_player
-import kotlin.native.concurrent.Worker
+import fluidsynth.native.*
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlin.native.concurrent.Worker
 
 /** fluid_player_status_t::FLUID_PLAYER_PLAYING == 1 */
 private const val FLUID_PLAYER_PLAYING_VALUE = 1
@@ -72,6 +62,9 @@ actual class MidiFilePlayer actual constructor(
 
     actual val isPlaying: Boolean
         get() = pausedAtTick < 0 && fluid_player_get_status(player) == FLUID_PLAYER_PLAYING_VALUE
+
+    actual val currentTick: Long
+        get() = if (pausedAtTick >= 0) pausedAtTick.toLong() else fluid_player_get_current_tick(player).toLong()
 
     actual val durationTicks: Long
         get() = fluid_player_get_total_ticks(player).toLong()
