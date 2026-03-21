@@ -14,20 +14,15 @@ private const val FLUID_PLAYER_PLAYING = 1
 actual class MidiFilePlayer actual constructor(
     soundFontPath: String,
     midiPath: String,
-    sampleRate: Int
+    config: AudioConfig,
 ) {
-    private val settingsPtr: Long
-    private val synthPtr: Long
-    private val driverPtr: Long
+    private val context = FluidSynthContext(config)
     private val playerPtr: Long
     private var pausedAtTick: Int = -1
 
     init {
-        settingsPtr = FluidSynthJni.newSettings()
-        synthPtr = FluidSynthJni.newSynth(settingsPtr)
-        driverPtr = FluidSynthJni.newAudioDriver(settingsPtr, synthPtr)
-        FluidSynthJni.sfLoad(synthPtr, soundFontPath, true)
-        playerPtr = FluidSynthJni.playerNew(synthPtr)
+        FluidSynthJni.sfLoad(context.synthPtr, soundFontPath, true)
+        playerPtr = FluidSynthJni.playerNew(context.synthPtr)
         FluidSynthJni.playerAdd(playerPtr, midiPath)
     }
 
@@ -68,8 +63,6 @@ actual class MidiFilePlayer actual constructor(
     actual fun close() {
         FluidSynthJni.playerStop(playerPtr)
         FluidSynthJni.playerDelete(playerPtr)
-        FluidSynthJni.deleteDriver(driverPtr)
-        FluidSynthJni.deleteSynth(synthPtr)
-        FluidSynthJni.deleteSettings(settingsPtr)
+        context.close()
     }
 }

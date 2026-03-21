@@ -6,9 +6,9 @@ package dev.kotlinds.fluidsynthkmp
  * Manages the full FluidSynth lifecycle: settings, synth engine, and audio driver.
  * Audio output starts immediately on construction via the platform's default audio driver.
  *
- * @param sampleRate The sample rate in Hz. Defaults to 44100.
+ * @param config Audio configuration (sample rate, interpolation quality, buffer settings).
  */
-expect class FluidSynthPlayer(sampleRate: Int = 44100) {
+expect class FluidSynthPlayer(config: AudioConfig = AudioConfig()) {
 
     /**
      * Loads a SoundFont (.sf2) file from the given file path.
@@ -49,6 +49,13 @@ expect class FluidSynthPlayer(sampleRate: Int = 44100) {
      * @param gain Gain factor. Typical range: 0.0 (silent) to 1.0 (full). Can exceed 1.0, max ~10.0.
      */
     fun setGain(gain: Float)
+
+    /**
+     * Changes the interpolation method at runtime, applying to all MIDI channels.
+     *
+     * @param interpolation New interpolation quality to use.
+     */
+    fun setInterpolation(interpolation: Int)
 
     /**
      * Configures the reverb effect for all effect groups.

@@ -1,9 +1,6 @@
 package dev.kotlinds.fluidsynthkmp
 
-import fluidsynth.native.delete_fluid_audio_driver
 import fluidsynth.native.delete_fluid_player
-import fluidsynth.native.delete_fluid_settings
-import fluidsynth.native.delete_fluid_synth
 import fluidsynth.native.fluid_player_add
 import fluidsynth.native.fluid_player_get_current_tick
 import fluidsynth.native.fluid_player_get_status
@@ -13,10 +10,7 @@ import fluidsynth.native.fluid_player_play
 import fluidsynth.native.fluid_player_seek
 import fluidsynth.native.fluid_player_stop
 import fluidsynth.native.fluid_synth_sfload
-import fluidsynth.native.new_fluid_audio_driver
 import fluidsynth.native.new_fluid_player
-import fluidsynth.native.new_fluid_settings
-import fluidsynth.native.new_fluid_synth
 import kotlin.native.concurrent.Worker
 import kotlinx.cinterop.ExperimentalForeignApi
 
@@ -34,14 +28,12 @@ private const val FLUID_PLAYER_PLAYING_VALUE = 1
 actual class MidiFilePlayer actual constructor(
     soundFontPath: String,
     midiPath: String,
-    sampleRate: Int
+    config: AudioConfig,
 ) {
-    private val settings = new_fluid_settings() ?: error("new_fluid_settings() failed")
-    private val synth = new_fluid_synth(settings) ?: error("new_fluid_synth() failed")
-    private val driver = new_fluid_audio_driver(settings, synth)
+    private val context = FluidSynthContext(config)
     private val player = run {
-        fluid_synth_sfload(synth, soundFontPath, 1)
-        new_fluid_player(synth) ?: error("new_fluid_player() failed")
+        fluid_synth_sfload(context.synth, soundFontPath, 1)
+        new_fluid_player(context.synth) ?: error("new_fluid_player() failed")
     }
     private var pausedAtTick: Int = -1
 
@@ -87,8 +79,6 @@ actual class MidiFilePlayer actual constructor(
     actual fun close() {
         fluid_player_stop(player)
         delete_fluid_player(player)
-        driver?.let { delete_fluid_audio_driver(it) }
-        delete_fluid_synth(synth)
-        delete_fluid_settings(settings)
+        context.close()
     }
 }

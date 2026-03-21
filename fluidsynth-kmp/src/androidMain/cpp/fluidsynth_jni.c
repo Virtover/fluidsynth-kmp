@@ -30,6 +30,24 @@ Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_deleteSettings(JNIEnv *env, jobjec
     }
 }
 
+JNIEXPORT jint JNICALL
+Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_setSettingsNum(JNIEnv *env, jobject thiz, jlong settings_ptr, jstring name, jdouble value) {
+    if (!settings_ptr) return -1;
+    const char *c_name = (*env)->GetStringUTFChars(env, name, NULL);
+    int result = fluid_settings_setnum((fluid_settings_t *)(intptr_t)settings_ptr, c_name, value);
+    (*env)->ReleaseStringUTFChars(env, name, c_name);
+    return result;
+}
+
+JNIEXPORT jint JNICALL
+Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_setSettingsInt(JNIEnv *env, jobject thiz, jlong settings_ptr, jstring name, jint value) {
+    if (!settings_ptr) return -1;
+    const char *c_name = (*env)->GetStringUTFChars(env, name, NULL);
+    int result = fluid_settings_setint((fluid_settings_t *)(intptr_t)settings_ptr, c_name, value);
+    (*env)->ReleaseStringUTFChars(env, name, c_name);
+    return result;
+}
+
 /* ---- Synth ---- */
 
 JNIEXPORT jlong JNICALL
@@ -82,6 +100,14 @@ Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_sfLoad(JNIEnv *env, jobject thiz, 
     int sfid = fluid_synth_sfload((fluid_synth_t *)(intptr_t)synth_ptr, c_path, reset_presets ? 1 : 0);
     (*env)->ReleaseStringUTFChars(env, path, c_path);
     return sfid;
+}
+
+/* ---- Interpolation ---- */
+
+JNIEXPORT jint JNICALL
+Java_dev_kotlinds_fluidsynthkmp_FluidSynthJni_setInterpMethod(JNIEnv *env, jobject thiz, jlong synth_ptr, jint chan, jint interp_method) {
+    if (!synth_ptr) return -1;
+    return fluid_synth_set_interp_method((fluid_synth_t *)(intptr_t)synth_ptr, chan, interp_method);
 }
 
 /* ---- Note Control ---- */

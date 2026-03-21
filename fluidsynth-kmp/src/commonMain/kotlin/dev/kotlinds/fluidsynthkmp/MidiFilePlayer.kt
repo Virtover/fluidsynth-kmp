@@ -8,10 +8,13 @@ package dev.kotlinds.fluidsynthkmp
  *
  * @param soundFontPath Absolute path to the SoundFont (.sf2) file.
  * @param midiPath Absolute path to the MIDI (.mid) file.
- * @param sampleRate The sample rate in Hz. Defaults to 44100.
+ * @param config Audio configuration (sample rate, interpolation quality, buffer settings).
  */
-expect class MidiFilePlayer(soundFontPath: String, midiPath: String, sampleRate: Int = 44100) {
-
+expect class MidiFilePlayer(
+    soundFontPath: String,
+    midiPath: String,
+    config: AudioConfig = AudioConfig(),
+) {
     /**
      * Starts or resumes playback.
      *

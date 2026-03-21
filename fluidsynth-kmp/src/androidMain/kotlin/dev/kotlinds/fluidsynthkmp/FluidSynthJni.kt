@@ -13,9 +13,12 @@ internal object FluidSynthJni {
 
     external fun newSettings(): Long
     external fun deleteSettings(settingsPtr: Long)
+    external fun setSettingsNum(settingsPtr: Long, name: String, value: Double): Int
+    external fun setSettingsInt(settingsPtr: Long, name: String, value: Int): Int
 
     external fun newSynth(settingsPtr: Long): Long
     external fun deleteSynth(synthPtr: Long)
+    external fun setInterpMethod(synthPtr: Long, chan: Int, interpMethod: Int): Int
 
     external fun newAudioDriver(settingsPtr: Long, synthPtr: Long): Long
     external fun deleteDriver(driverPtr: Long)

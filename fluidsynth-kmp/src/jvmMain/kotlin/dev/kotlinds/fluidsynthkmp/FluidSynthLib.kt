@@ -18,6 +18,8 @@ internal interface FluidSynthLib : Library {
     // Settings
     fun new_fluid_settings(): Pointer?
     fun delete_fluid_settings(settings: Pointer)
+    fun fluid_settings_setnum(settings: Pointer, name: String, value: Double): Int
+    fun fluid_settings_setint(settings: Pointer, name: String, value: Int): Int
 
     // Synth
     fun new_fluid_synth(settings: Pointer): Pointer?
@@ -29,6 +31,9 @@ internal interface FluidSynthLib : Library {
 
     // SoundFont loading
     fun fluid_synth_sfload(synth: Pointer, filename: String, reset_presets: Int): Int
+
+    // Interpolation
+    fun fluid_synth_set_interp_method(synth: Pointer, chan: Int, interp_method: Int): Int
 
     // Note control
     fun fluid_synth_noteon(synth: Pointer, chan: Int, key: Int, vel: Int): Int

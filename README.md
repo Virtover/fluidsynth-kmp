@@ -39,7 +39,7 @@ Add the dependency from Maven Central:
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("dev.kotlinds:fluidsynth-kmp:1.0.0")
+    implementation("dev.kotlinds:fluidsynth-kmp:1.1.0")
 }
 ```
 
@@ -74,13 +74,41 @@ the [FluidSynth releases page](https://github.com/FluidSynth/fluidsynth/releases
 
 ## Usage
 
+### Audio configuration — `AudioConfig`
+
+Both `FluidSynthPlayer` and `MidiFilePlayer` accept an optional `AudioConfig` to control audio quality and latency.
+
+```kotlin
+val config = AudioConfig(
+    sampleRate = 44100,           // output sample rate in Hz
+    interpolation = Interpolation.HIGH, // resampling quality (FAST, NORMAL, HIGH)
+    periodSize = 64,              // audio frames per buffer period (lower = less latency)
+    periods = 2,                  // number of buffer periods
+)
+```
+
+| Parameter       | Default              | Description                                            |
+|-----------------|----------------------|--------------------------------------------------------|
+| `sampleRate`    | `44100`              | Output sample rate in Hz.                              |
+| `interpolation` | `Interpolation.HIGH` | Resampling quality. `HIGH` gives best audio fidelity.  |
+| `periodSize`    | `64`                 | Frames per buffer period. Lower values reduce latency. |
+| `periods`       | `2`                  | Number of buffer periods.                              |
+
+**Interpolation modes:**
+
+| Value                  | FluidSynth method | Description                            |
+|------------------------|-------------------|----------------------------------------|
+| `Interpolation.FAST`   | Nearest-neighbour | Lowest CPU usage, lowest quality.      |
+| `Interpolation.NORMAL` | 4th-order cubic   | Balanced quality and CPU usage.        |
+| `Interpolation.HIGH`   | 7th-order sinc    | Best audio quality, highest CPU usage. |
+
 ### Real-time synthesis — `FluidSynthPlayer`
 
 Use `FluidSynthPlayer` to load a SoundFont and play notes in real time. The audio driver starts automatically on
 construction.
 
 ```kotlin
-val player = FluidSynthPlayer(sampleRate = 44100)
+val player = FluidSynthPlayer(AudioConfig(sampleRate = 48000, interpolation = Interpolation.HIGH))
 
 // Load a SoundFont (.sf2) from a file path
 val sfontId = player.loadSoundFont("/path/to/soundfont.sf2")
@@ -97,6 +125,9 @@ player.noteOff(channel = 0, key = 60)
 
 // Adjust master volume (0.0 to 10.0, default 0.2)
 player.setGain(0.5f)
+
+// Change interpolation quality at runtime
+player.setInterpolation(Interpolation.FAST)
 
 // Configure reverb (roomSize, damping, width, level)
 player.setReverb(roomSize = 0.6, damping = 0.5, width = 0.5, level = 0.3)
@@ -118,7 +149,8 @@ Use `MidiFilePlayer` to play a complete `.mid` file through a SoundFont.
 ```kotlin
 val player = MidiFilePlayer(
     soundFontPath = "/path/to/soundfont.sf2",
-    midiPath = "/path/to/song.mid"
+    midiPath = "/path/to/song.mid",
+    config = AudioConfig(sampleRate = 44100, interpolation = Interpolation.HIGH),
 )
 
 // Play with a completion handler
@@ -164,6 +196,15 @@ player.play()
 
 ## API reference
 
+### `AudioConfig`
+
+| Parameter       | Type  | Default              | Description                       |
+|-----------------|-------|----------------------|-----------------------------------|
+| `sampleRate`    | `Int` | `44100`              | Output sample rate in Hz.         |
+| `interpolation` | `Int` | `Interpolation.HIGH` | Resampling interpolation quality. |
+| `periodSize`    | `Int` | `64`                 | Audio frames per buffer period.   |
+| `periods`       | `Int` | `2`                  | Number of buffer periods.         |
+
 ### `FluidSynthPlayer`
 
 | Method                                       | Description                                                          |
@@ -173,6 +214,7 @@ player.play()
 | `noteOff(channel, key)`                      | Sends a MIDI note-off event.                                         |
 | `programChange(channel, program)`            | Selects a General MIDI instrument (0–127) on a channel.              |
 | `setGain(gain: Float)`                       | Sets master output gain. Typical range: 0.0–1.0.                     |
+| `setInterpolation(interpolation: Int)`       | Changes resampling quality at runtime (all channels).                |
 | `setReverb(roomSize, damping, width, level)` | Configures the reverb effect (all Double).                           |
 | `setChorus(voiceCount, level, speed, depth)` | Configures the chorus effect.                                        |
 | `renderFloat(frames: Int): FloatArray`       | Renders `frames` audio frames to an interleaved stereo float buffer. |
