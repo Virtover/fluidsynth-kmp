@@ -243,3 +243,12 @@ dynamically linked as an embedded framework.
 
 See [LICENSE](LICENSE) and the [FluidSynth license](https://github.com/FluidSynth/fluidsynth/blob/master/LICENSE) for
 details.
+
+## Libraries & tools using fluidsynth-kmp
+
+- [nds-music-player](https://github.com/kotlinds/nds-music-player): A cross-platform Nintendo DS music player built with
+  Kotlin Multiplatform. Load any `.nds` ROM and browse, search, and play its full soundtrack — on iOS, Android, and
+  desktop.
+
+If you are using fluidsynth-kmp in your project/library, please let us know by opening a pull request to add it to this
+list!
