@@ -39,7 +39,7 @@ Add the dependency from Maven Central:
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("dev.kotlinds:fluidsynth-kmp:1.1.0")
+    implementation("dev.kotlinds:fluidsynth-kmp:1.1.1")
 }
 ```
 

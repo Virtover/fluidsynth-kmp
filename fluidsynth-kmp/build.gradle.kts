@@ -1,3 +1,6 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.vanniktech.maven.publish.SourcesJar
 import java.io.File
 
 plugins {
@@ -10,7 +13,10 @@ plugins {
 }
 
 mavenPublishing {
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    // Empty javadoc jars: embedding the full Dokka site in each platform publication
+    // would blow the Maven Central size limits. KDoc stays available in the IDE via sources jars.
+    configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty(), sourcesJar = SourcesJar.Sources()))
+    publishToMavenCentral()
     signAllPublications()
     pom {
         name.set("fluidsynth-kmp")
@@ -77,15 +83,6 @@ kotlin {
     // Tiers are in accordance with <https://kotlinlang.org/docs/native-target-support.html>
     // Tier 1
     // macOS: link against system-installed FluidSynth (Homebrew: /opt/homebrew/lib or /usr/local/lib)
-    macosX64 {
-        val main by compilations.getting
-        main.cinterops.create("fluidsynth") {
-            definitionFile = file("src/nativeInterop/cinterop/fluidsynth-macos.def")
-            includeDirs.headerFilterOnly(includeDir)
-            extraOpts("-libraryPath", "/usr/local/lib")
-            extraOpts("-libraryPath", "/opt/homebrew/lib")
-        }
-    }
     macosArm64 {
         val main by compilations.getting
         main.cinterops.create("fluidsynth") {
@@ -98,16 +95,6 @@ kotlin {
     // iOS targets: statically linked — libfluidsynth.a is embedded in the klib.
     // Run scripts/build-ios-static.sh once to populate libs/ios-static/ before publishing.
     iosSimulatorArm64 {
-        if (hasIosSimulatorLib) {
-            val main by compilations.getting
-            main.cinterops.create("fluidsynth") {
-                definitionFile = file("src/nativeInterop/cinterop/fluidsynth-ios-simulator.def")
-                includeDirs.headerFilterOnly(iosSimulatorHeadersDir!!)
-                extraOpts("-libraryPath", iosSimulatorStaticDir.absolutePath)
-            }
-        }
-    }
-    iosX64 {
         if (hasIosSimulatorLib) {
             val main by compilations.getting
             main.cinterops.create("fluidsynth") {
@@ -186,14 +173,12 @@ kotlin {
 
         // nativeMain covers all native targets: macOS + Linux + Windows + iOS
         val nativeMain by creating { dependsOn(commonMain.get()) }
-        val macosX64Main by getting { dependsOn(nativeMain) }
         val macosArm64Main by getting { dependsOn(nativeMain) }
         val linuxX64Main by getting { dependsOn(nativeMain) }
         val linuxArm64Main by getting { dependsOn(nativeMain) }
         val mingwX64Main by getting { dependsOn(nativeMain) }
         val iosArm64Main by getting { dependsOn(nativeMain) }
         val iosSimulatorArm64Main by getting { dependsOn(nativeMain) }
-        val iosX64Main by getting { dependsOn(nativeMain) }
     }
 }
 
