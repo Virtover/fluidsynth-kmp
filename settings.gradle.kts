@@ -1,4 +1,4 @@
-rootProject.name = "fluidsynth-kmp"
+rootProject.name = "fluidsynth-kmp-root"
 
 pluginManagement {
     repositories {

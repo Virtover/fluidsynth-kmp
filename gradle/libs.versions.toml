@@ -1,11 +1,11 @@
 [versions]
-kotlin = "2.3.0"
-kover = "0.8.3"
+kotlin = "2.4.20"
+kover = "0.9.11"
 detekt = "1.23.8"
-dokka = "2.0.0"
-ksp = "2.3.4"
-maven = "0.30.0"
-android-gradle-plugin = "8.7.3"
+dokka = "2.2.0"
+ksp = "2.3.12"
+maven = "0.37.0"
+android-gradle-plugin = "8.13.2"
 jna = "5.15.0"
 
 [plugins]

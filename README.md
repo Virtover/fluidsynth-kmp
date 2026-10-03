@@ -15,7 +15,7 @@ Supports Android, iOS, macOS, Linux, Windows, and JVM/Desktop from a single Kotl
 | FluidSynth (Android prebuilt `.so`) | 2.5.3   |
 | FluidSynth (iOS XCFramework)        | 2.5.2   |
 | JNA (JVM/Desktop binding)           | 5.15.0  |
-| Kotlin                              | 2.3.0   |
+| Kotlin                              | 2.4.20  |
 
 ### Supported targets
 
@@ -23,8 +23,8 @@ Supports Android, iOS, macOS, Linux, Windows, and JVM/Desktop from a single Kotl
 |------------------------------------------|-----------------------------------------|
 | Android (arm64-v8a, armeabi-v7a, x86_64) | JNI + prebuilt `.so` (bundled)          |
 | iOS device (arm64)                       | cinterop + XCFramework (bundled)        |
-| iOS simulator (arm64 + x86_64)           | cinterop + XCFramework (bundled)        |
-| macOS (arm64, x64)                       | cinterop + system FluidSynth (Homebrew) |
+| iOS simulator (arm64)                    | cinterop + XCFramework (bundled)        |
+| macOS (arm64)                            | cinterop + system FluidSynth (Homebrew) |
 | Linux (x64, arm64)                       | cinterop + system FluidSynth            |
 | Windows (x64)                            | cinterop + system FluidSynth            |
 | JVM/Desktop                              | JNA + system FluidSynth                 |
@@ -39,7 +39,7 @@ Add the dependency from Maven Central:
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("dev.kotlinds:fluidsynth-kmp:1.1.0")
+    implementation("dev.kotlinds:fluidsynth-kmp:1.1.1")
 }
 ```
 
